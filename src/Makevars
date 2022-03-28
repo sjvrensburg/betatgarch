@@ -1,0 +1,4 @@
+CXX_STD = CXX14
+# We also need importFrom(RcppParallel,RcppParallelLibs) in NAMESPACE
+PKG_LIBS += $(shell ${R_HOME}/bin/Rscript -e "RcppParallel::RcppParallelLibs()")
+PKG_LIBS += $(shell ${R_HOME}/bin/Rscript -e "StanHeaders:::LdFlags()")

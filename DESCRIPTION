@@ -1,0 +1,24 @@
+Package: betatgarch
+Type: Package
+Title: Beta-t-GARCH
+Version: 1.0
+Date: 2022-03-22
+Author: Stefan Janse van Rensburg
+Maintainer: Stefan Janse van Rensburg <stefanj@mandela.ac.za>
+Description: Code to estimate and simulate from the Beta-t-GARCH model.
+License: GPL (>= 3)
+Depends:
+  R (>= 4.1.1),
+  nloptr (>= 2.0.0),
+  rugarch (>= 1.4-7)
+Imports:
+  Rdpack,
+  methods,
+  Rcpp (>= 1.0.8),
+  RcppParallel (>= 5.1.5),
+  rstan (>= 2.18.1),
+  rstantools (>= 2.1.1.9000)
+RdMacros: Rdpack
+LinkingTo: BH, Rcpp, RcppEigen, RcppParallel, rstan, StanHeaders
+SystemRequirements: GNU make
+RoxygenNote: 7.1.2
