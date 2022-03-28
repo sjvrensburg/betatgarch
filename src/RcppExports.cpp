@@ -13,7 +13,7 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 
 // cnstr
 List cnstr(const Eigen::VectorXd y, const Eigen::VectorXd theta);
-RcppExport SEXP _betatgarch3_cnstr(SEXP ySEXP, SEXP thetaSEXP) {
+RcppExport SEXP _betatgarch_cnstr(SEXP ySEXP, SEXP thetaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -25,7 +25,7 @@ END_RCPP
 }
 // recursion_lst
 List recursion_lst(const Eigen::VectorXd& y, const double f_0, const Eigen::VectorXd theta);
-RcppExport SEXP _betatgarch3_recursion_lst(SEXP ySEXP, SEXP f_0SEXP, SEXP thetaSEXP) {
+RcppExport SEXP _betatgarch_recursion_lst(SEXP ySEXP, SEXP f_0SEXP, SEXP thetaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -38,7 +38,7 @@ END_RCPP
 }
 // nll
 List nll(const Eigen::VectorXd y, const double f_0, const Eigen::VectorXd theta);
-RcppExport SEXP _betatgarch3_nll(SEXP ySEXP, SEXP f_0SEXP, SEXP thetaSEXP) {
+RcppExport SEXP _betatgarch_nll(SEXP ySEXP, SEXP f_0SEXP, SEXP thetaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -51,7 +51,7 @@ END_RCPP
 }
 // simulate_lst
 List simulate_lst(const Eigen::VectorXd& e, const double f_0, const Eigen::VectorXd theta);
-RcppExport SEXP _betatgarch3_simulate_lst(SEXP eSEXP, SEXP f_0SEXP, SEXP thetaSEXP) {
+RcppExport SEXP _betatgarch_simulate_lst(SEXP eSEXP, SEXP f_0SEXP, SEXP thetaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -64,14 +64,14 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_betatgarch3_cnstr", (DL_FUNC) &_betatgarch3_cnstr, 2},
-    {"_betatgarch3_recursion_lst", (DL_FUNC) &_betatgarch3_recursion_lst, 3},
-    {"_betatgarch3_nll", (DL_FUNC) &_betatgarch3_nll, 3},
-    {"_betatgarch3_simulate_lst", (DL_FUNC) &_betatgarch3_simulate_lst, 3},
+    {"_betatgarch_cnstr", (DL_FUNC) &_betatgarch_cnstr, 2},
+    {"_betatgarch_recursion_lst", (DL_FUNC) &_betatgarch_recursion_lst, 3},
+    {"_betatgarch_nll", (DL_FUNC) &_betatgarch_nll, 3},
+    {"_betatgarch_simulate_lst", (DL_FUNC) &_betatgarch_simulate_lst, 3},
     {NULL, NULL, 0}
 };
 
-RcppExport void R_init_betatgarch3(DllInfo *dll) {
+RcppExport void R_init_betatgarch(DllInfo *dll) {
     R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
     R_useDynamicSymbols(dll, FALSE);
 }
