@@ -17,7 +17,7 @@
 #' constraint.
 #'
 cnstr <- function(y, theta) {
-    .Call(`_betatgarch3_cnstr`, y, theta)
+    .Call(`_betatgarch_cnstr`, y, theta)
 }
 
 #' Beta-t-GARCH Recursion/Filter
@@ -45,7 +45,7 @@ cnstr <- function(y, theta) {
 #'   }
 #'
 recursion_lst <- function(y, f_0, theta) {
-    .Call(`_betatgarch3_recursion_lst`, y, f_0, theta)
+    .Call(`_betatgarch_recursion_lst`, y, f_0, theta)
 }
 
 #' Negative log-likelihood and its gradient.
@@ -64,7 +64,7 @@ recursion_lst <- function(y, f_0, theta) {
 #'   model parameters.
 #'
 nll <- function(y, f_0, theta) {
-    .Call(`_betatgarch3_nll`, y, f_0, theta)
+    .Call(`_betatgarch_nll`, y, f_0, theta)
 }
 
 #' Simulate Values From Beta-t-GARCH Model Given a Vector of Innovations
@@ -86,6 +86,6 @@ nll <- function(y, f_0, theta) {
 #'   }
 #'
 simulate_lst <- function(e, f_0, theta) {
-    .Call(`_betatgarch3_simulate_lst`, e, f_0, theta)
+    .Call(`_betatgarch_simulate_lst`, e, f_0, theta)
 }
 

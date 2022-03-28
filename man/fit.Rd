@@ -45,17 +45,17 @@ Fit a Beta-t-GARCH Model Using Maximum Likelihood Estimation
 }
 \details{
 This function estimates the Beta-t-GARCH(1,1) model with leverage of
-  \insertCite{Harvey2008;textual}{betatgarch3}. It can, optionally, maximise
+  \insertCite{Harvey2008;textual}{betatgarch}. It can, optionally, maximise
   the log-likelihood over a restricted parameter space that satisfies an
   empirical version of the Lyapunov condition as in
-  \insertCite{Blasques2018;textual}{betatgarch3}.
+  \insertCite{Blasques2018;textual}{betatgarch}.
 
   NOTE: If you receive the error
   "\code{student_t_lpdf: Scale parameter is 0, but must be > 0!}"
   then try to increase the lower bound on the parameter nu.
 }
 \references{
-\insertRef{Harvey2008}{betatgarch3}
+\insertRef{Harvey2008}{betatgarch}
 
-\insertRef{Blasques2018}{betatgarch3}
+\insertRef{Blasques2018}{betatgarch}
 }

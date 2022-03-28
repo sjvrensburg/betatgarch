@@ -1,4 +1,4 @@
-useDynLib(betatgarch3, .registration=TRUE)
+useDynLib(betatgarch, .registration=TRUE)
 importFrom(Rcpp, evalCpp)
 exportPattern("^[[:alpha:]]+")
 importFrom(RcppParallel,RcppParallelLibs)
