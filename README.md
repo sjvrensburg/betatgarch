@@ -19,7 +19,7 @@ At this time, the package contains functions to estimate and simulate from the B
 
 ### Estimation Example
 
-Download the file `HangSend.csv` from [https://www.econ.cam.ac.uk/DCS/data.html](https://www.econ.cam.ac.uk/DCS/data.html) and import it into R:
+Download the file `HangSeng.csv` from [https://www.econ.cam.ac.uk/DCS/data.html](https://www.econ.cam.ac.uk/DCS/data.html) and import it into R:
 
 ```r
 # Using the library readr
