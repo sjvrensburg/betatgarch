@@ -37,13 +37,13 @@ library(betatgarch)
 # Estimate the model without restricting the parameter space
 # to a region that satisfies an empirical version of the 
 # Lyapunov condition.
-res_01 <- fit(hang_sen$returns, constrain = FALSE)
+res_01 <- fit(hang_seng$returns, constrain = FALSE)
 # Extract the output from nloptr
 res_01$Estimation
 
 # Estimate the model over a restricted parameter space that
 # satisfies an empirical version of the Lyapunov condition.
-res_02 <- fit(hang_sen$returns, constrain = TRUE)
+res_02 <- fit(hang_seng$returns, constrain = TRUE)
 # Extract the output from nloptr
 res_02$Estimation
 ```
