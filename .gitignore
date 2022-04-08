@@ -2,6 +2,7 @@
 .Rhistory
 .RData
 .Ruserdata
+*.token
 src/*.o
 src/*.so
 src/*.dll
