@@ -37,7 +37,7 @@ typename promote_args<T1, T2>::type log_pdf(const T1 x, const T2 f,
 // score, i.t.o. epsilon
 template <typename T1, typename T2>
 typename promote_args<T1, T2>::type qscore(const T1 e_t, const T2 n) {
-  const auto sqrd_dev = pow(e_t, 2);
+  const auto sqrd_dev = e_t * e_t;
   const auto numer = (n + 1.0) * sqrd_dev;
   const auto denom = (n - 2.0) + sqrd_dev;
   return numer / denom;
@@ -59,7 +59,8 @@ std::unordered_map<std::string, Eigen::Matrix<T, Eigen::Dynamic, 1>>
   Eigen::Matrix<T, Eigen::Dynamic, 1> ll(y.size());
   ll.fill(0.0);
   Eigen::Matrix<T, Eigen::Dynamic, 1> f(y.size());
-  f.fill(f_0);
+  f.fill(w);
+  f(0) = f_0;
   Eigen::Matrix<T, Eigen::Dynamic, 1> e(y.size());
   e.fill(y(0) / sqrt(f_0));
   Eigen::Matrix<T, Eigen::Dynamic, 1> u(y.size());
@@ -67,12 +68,11 @@ std::unordered_map<std::string, Eigen::Matrix<T, Eigen::Dynamic, 1>>
   double d = 0.0;
 
   for (auto t = 1; t < y.size(); t++) {
-    d = 0;
-    if (y(t-1) < 0) d = 1;
-    f(t) = w + (a + g * d) * u(t-1) * f(t-1) + b * f(t-1);
-    ll(t) = log_pdf(y(t), f(t), n);
+    d = y(t-1) < 0 ? 1 : 0;
+    f(t) += ((a + g*d) * u(t-1) + b) * f(t-1);
     e(t) = y(t) / sqrt(f(t));
     u(t) = qscore(e(t), n);
+    ll(t) = log_pdf(y(t), f(t), n);
   }
 
   std::unordered_map<std::string, Eigen::Matrix<T, Eigen::Dynamic, 1>> res = {
@@ -186,15 +186,15 @@ List simulate_lst(const Eigen::VectorXd& e, const double f_0,
   Eigen::VectorXd ll(e.size());
 
   // Initial values
-  y.fill((0) * sqrt(f_0));
-  f.fill(f_0);
+  f.fill(w);
+  f(0) = f_0;
   u.fill(qscore(e(0), n));
 
   double d = 0.0;
 
   for (auto t = 1; t < y.size(); t++) {
-    d = 0; if (y(t-1) < 0) d = 1;
-    f(t) = w + (a + g * d) * u(t-1) * f(t-1) + b * f(t-1);
+    d = y(t-1) < 0 ? 1 : 0;
+    f(t) += ((a + g*d) * u(t-1) + b) * f(t-1);
     ll(t) = log_pdf(y(t), f(t), n);
     y(t) = e(t) * sqrt(f(t));
     u(t) = qscore(e(t), n);
