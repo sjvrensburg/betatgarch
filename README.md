@@ -40,11 +40,11 @@ fit_obj <- BetaTGARCHfit$new(hang_seng, n = 5)
 # Estimate the model without restricting the parameter space
 # to a region that satisfies an empirical version of the 
 # Lyapunov condition.
-fit_obj2$fit(restrict = FALSE)
+fit_obj$fit(restrict = FALSE)
 
 # Estimate the model over a restricted parameter space that
 # satisfies an empirical version of the Lyapunov condition.
-fit_obj2$fit(restrict = TRUE)
+fit_obj$fit(restrict = TRUE)
 ```
 
 ## A Note on Estimation
