@@ -11,7 +11,8 @@ fit(
   lb = c(.Machine$double.eps, 0, 0, 0, 2.1),
   ub = c(Inf, 1, 1, 1, Inf),
   constrain = TRUE,
-  opts = list(algorithm = "NLOPT_LD_SLSQP", xtol_rel = 1e-04, maxeval = 100),
+  opts = list(algorithm = "NLOPT_LD_AUGLAG", xtol_rel = 1e-12, maxeval = 1000,
+    local_opts = list(algorithm = "NLOPT_LD_LBFGS", xtol_rel = 1e-10, maxeval = 500)),
   ...
 )
 }

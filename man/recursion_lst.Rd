@@ -17,7 +17,7 @@ recursion_lst(y, f_0, theta)
 Returns a list of vectors. The elements of the list are (in order):
   \enumerate{
     \item each observation's contribution to the log-likelihood (`"llik_t"`),
-    \item the conditional variances (`"f"`),
+    \item the conditional variances (`"f_t"`),
     \item score residuals (`"s_t"`) and
     \item model residuals (`"residuals"`).
   }
@@ -33,4 +33,6 @@ Calculates the values of
     \item score innovation/residual and
     \item model residuals.
   }
+  End-users should rather use the \code{BetaTGARCHfit} class's \code{filter}
+  method.
 }

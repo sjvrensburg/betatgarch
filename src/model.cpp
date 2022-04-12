@@ -91,6 +91,8 @@ std::unordered_map<std::string, Eigen::Matrix<T, Eigen::Dynamic, 1>>
 //'     \item score innovation/residual and
 //'     \item model residuals.
 //'   }
+//'   End-users should rather use the \code{BetaTGARCHfit} class's \code{filter}
+//'   method.
 //'
 //' @param y numeric vector of observations \eqn{y_0, y_1, ...}
 //' @param f_0 initial value of the conditional variance
@@ -100,7 +102,7 @@ std::unordered_map<std::string, Eigen::Matrix<T, Eigen::Dynamic, 1>>
 //'   Returns a list of vectors. The elements of the list are (in order):
 //'   \enumerate{
 //'     \item each observation's contribution to the log-likelihood (`"llik_t"`),
-//'     \item the conditional variances (`"f"`),
+//'     \item the conditional variances (`"f_t"`),
 //'     \item score residuals (`"s_t"`) and
 //'     \item model residuals (`"residuals"`).
 //'   }
