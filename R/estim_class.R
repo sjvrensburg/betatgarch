@@ -6,14 +6,18 @@ BetaTGARCHfit <- R6::R6Class("BetaTGARCHfit",
   public = list(
     #' @field data original data passed to BetaTGARCHfit
     data = NULL,
+
     #' @field matcoef matrix of estimates, robust standard errors, robust t
     #'   statistics and associated p-values
     matcoef = NULL,
+
     #' @field se estimated standard errors
     se = NULL,
+
     #' @field nlopt_res the raw results returned by \code{NLOPT}
     nlopt_res = NULL,
-    #' @field boolean that indicates whether estimation was successful
+
+    #' @field convergence boolean that indicates whether estimation was successful
     convergence = FALSE,
 
     #' @description
@@ -150,9 +154,8 @@ BetaTGARCHfit <- R6::R6Class("BetaTGARCHfit",
       return(ans)
     },
 
+    #' @description Returns the log-likelihood of the estimated model.
     logLik = function() {
-      # TODO: If we change to minimising the average negative log-lik then we
-      # must multiply by self.nobs()
       ans <- NULL
       if (!is.null(self$nlopt_res)) ans <- -1 * self$nlopt_res$objective
       return(ans)
@@ -169,7 +172,7 @@ BetaTGARCHfit <- R6::R6Class("BetaTGARCHfit",
     },
 
     #' @description Calculates the robust variance-covariance matrix of a fitted
-    #'  Beta-t-GARCH(1,1) model. This method returns matrix of estimated
+    #'  Beta-t-GARCH(1,1) model. This method returns a matrix of estimated
     #'  covariances between model parameters.
     vcov = function(...) {
       if (is.null(self$coef())) {
@@ -194,6 +197,8 @@ BetaTGARCHfit <- R6::R6Class("BetaTGARCHfit",
     #'  estimated model.
     residuals = function() private$stnd_resid,
 
+    #' @description Returns a vector of the estimated conditional standard
+    #'  deviation.
     sigma = function() {
       if (is.null(private$f_t)) {
         msg <- paste("Please estimate the model or filter with or filter with",
@@ -203,6 +208,7 @@ BetaTGARCHfit <- R6::R6Class("BetaTGARCHfit",
       return(sqrt(private$f_t))
     },
 
+    #' @description Prints a summary of estimation results to the screen.
     show = function() {
       cat("\n############################", sep = "\n")
       cat("# BETA-t-EGARCH(1,1) Model #", sep = "\n")
@@ -228,9 +234,6 @@ BetaTGARCHfit <- R6::R6Class("BetaTGARCHfit",
 
       invisible(self)
     },
-    #' @description Summary of Estimation Results
-    summary = function() invisible(self)
-  ),
 
   private = list(
     # Private fields
@@ -243,7 +246,7 @@ BetaTGARCHfit <- R6::R6Class("BetaTGARCHfit",
     score_resid = NULL,
     stnd_resid = NULL,
     restrict = TRUE,
-    # Private methods
+    # Private methods used by the method `fit`
     eval_f = function(parm) nll(y = private$x, f_0 = private$f_0, theta = parm),
     eval_g = function(parm) {
       if (private$restrict) {
