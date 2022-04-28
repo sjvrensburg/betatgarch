@@ -233,7 +233,7 @@ BetaTGARCHfit <- R6::R6Class("BetaTGARCHfit",
       show(self$matcoef)
 
       invisible(self)
-    },
+    }),
 
   private = list(
     # Private fields
