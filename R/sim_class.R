@@ -60,11 +60,11 @@ BetaTGARCHsim <- R6::R6Class("BetaTGARCHsim",
       res <- simulate_lst(innovations, private$f_0__, private$coef__)
       # Remove burnin period
       if (N != n) {
-        res$y_t <- res$y_t[-1 * (1:burnin)]
-        res$f_t <- res$f_t[-1 * (1:burnin)]
-        res$s_t <- res$s_t[-1 * (1:burnin)]
-        res$llik_t <- res$llik_t[-1 * (1:burnin)]
-        res$innovations <- res$innovations[-1 * (1:burnin)]
+        res$y_t <- res$y_t[-1 * (1:B)]
+        res$f_t <- res$f_t[-1 * (1:B)]
+        res$s_t <- res$s_t[-1 * (1:B)]
+        res$llik_t <- res$llik_t[-1 * (1:B)]
+        res$innovations <- res$innovations[-1 * (1:B)]
       }
       return(res)
     },
