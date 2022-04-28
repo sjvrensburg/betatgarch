@@ -235,12 +235,19 @@ Returns a vector of estimated coefficients/parameters.
 \if{latex}{\out{\hypertarget{method-vcov}{}}}
 \subsection{Method \code{vcov()}}{
 Calculates the robust variance-covariance matrix of a fitted
- Beta-t-GARCH(1,1) model. This method returns a matrix of estimated
- covariances between model parameters.
+Beta-t-GARCH(1,1) model. This method returns a matrix of estimated
+covariances between model parameters.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BetaTGARCHfit$vcov(...)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{...}}{additional arguments passed to \code{numDeriv::jacobian}}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-residuals"></a>}}

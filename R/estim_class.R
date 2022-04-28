@@ -173,9 +173,12 @@ BetaTGARCHfit <- R6::R6Class("BetaTGARCHfit",
       return(ans)
     },
 
-    #' @description Calculates the robust variance-covariance matrix of a fitted
-    #'  Beta-t-GARCH(1,1) model. This method returns a matrix of estimated
-    #'  covariances between model parameters.
+    #' @description
+    #' Calculates the robust variance-covariance matrix of a fitted
+    #' Beta-t-GARCH(1,1) model. This method returns a matrix of estimated
+    #' covariances between model parameters.
+    #'
+    #' @param ... additional arguments passed to \code{numDeriv::jacobian}
     vcov = function(...) {
       if (is.null(self$coef())) {
         msg <- paste(
