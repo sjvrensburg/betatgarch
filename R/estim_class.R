@@ -4,21 +4,24 @@
 BetaTGARCHfit <- R6::R6Class("BetaTGARCHfit",
   lock_objects = FALSE,
   public = list(
-    #' @field data original data passed to BetaTGARCHfit
-    data = NULL,
+    #' @description Original data passed to BetaTGARCHfit
+    data = function() private$data__,
 
-    #' @field matcoef matrix of estimates, robust standard errors, robust t
+    #' @description Initial value of the conditional variance.
+    f_0 = function() private$f_0__,
+
+    #' @description Matrix of estimates, robust standard errors, robust t
     #'   statistics and associated p-values
-    matcoef = NULL,
+    matcoef = function() private$matcoef__,
 
-    #' @field se estimated standard errors
-    se = NULL,
+    #' @description Estimated standard errors
+    se = function() private$se__,
 
-    #' @field nlopt_res the raw results returned by \code{NLOPT}
-    nlopt_res = NULL,
+    #' @description The raw results returned by \code{NLOPT}
+    nlopt_res = function() private$nlopt_res__,
 
-    #' @field convergence boolean that indicates whether estimation was successful
-    convergence = FALSE,
+    #' @description Boolean that indicates whether estimation was successful
+    convergence = function() private$convergence__,
 
     #' @description
     #' Create a new \code{BetaTGARCHfit} object.
@@ -37,24 +40,24 @@ BetaTGARCHfit <- R6::R6Class("BetaTGARCHfit",
       }
       if (!is.null(f_0)) {
         warning("n not used since f_0 given")
-        private$n <- 1
-        private$f_0 <- f_0
-        private$x <- zoo::coredata(y)
+        private$n__ <- 1
+        private$f_0__ <- f_0
+        private$x__ <- zoo::coredata(y)
       } else {
         prep <- prep_data(zoo::coredata(y), n = n)
-        private$n <- n
-        private$f_0 <- prep$f_0
-        private$x <- prep$y
+        private$n__ <- n
+        private$f_0__ <- prep$f_0
+        private$x__ <- prep$y
       }
-      self$data <- y
-      private$idx <- zoo::index(y)
+      private$data__ <- y
+      private$idx__ <- zoo::index(y)
       invisible(self)
     },
 
     #' @description
     #' Returns the number of observations used in estimation. This excludes the
     #' \code{n} pre-sample observations used to initialise the filter.
-    nobs = function() length(private$x) - 1,
+    nobs = function() length(private$x__) - 1,
 
     #' @description Maximum Likelihood Estimation of The Beta-t-GARCH(1,1) Model
     #' @param x0 initial values passed to \code{nloptr}
@@ -91,25 +94,24 @@ BetaTGARCHfit <- R6::R6Class("BetaTGARCHfit",
                        xtol_rel = 1.0e-10, maxeval = 500
                      )
                    ), ...) {
-      private$restrict <- restrict
+      private$restrict__ <- restrict
       # Define the objective, gradient and constraints.
       eval_f <- function(x) private$eval_f(x)
       eval_g <- function(x) private$eval_g(x)
       eval_jac_g <- function(x) private$eval_jac_g(x)
       # Initial values...
       if (is.null(x0)) {
-        # TODO: Consider changing this to use estimates from a GJR-GARCH.
-        x0 <- c(w = private$f_0*0.1, a = 0.05, b = 0.9, g = 0, n = 4)
+        x0 <- c(w = private$f_0__ * 0.1, a = 0.05, b = 0.9, g = 0, n = 4)
       }
       # Perform the optimisation
-      self$nlopt_res <- nloptr::nloptr(
+      private$nlopt_res__ <- nloptr::nloptr(
         x0 = x0, eval_f = eval_f, lb = lb, ub = ub, eval_g_ineq = eval_g,
         eval_jac_g_ineq = eval_jac_g, opts = opts, ...
       )
-      self$convergence <- TRUE
-      if (self$nlopt_res$status < 0 | self$nlopt_res$status == 5) {
-        warning(self$nlopt_res$message)
-        self$convergence <- FALSE
+      private$convergence__ <- TRUE
+      if (private$nlopt_res__$status < 0 | private$nlopt_res__$status == 5) {
+        warning(private$nlopt_res__$message)
+        private$convergence__ <- FALSE
       }
       self$coef()
       self$vcov()
@@ -136,36 +138,36 @@ BetaTGARCHfit <- R6::R6Class("BetaTGARCHfit",
         stop("Either supply parameter vector of estimate the model.")
       }
       if (is.null(parm) & !is.null(self$coef())) {
-        ans <- recursion_lst(private$x, private$f_0, self$coef())
+        ans <- recursion_lst(private$x__, private$f_0__, self$coef())
       }
       if (!is.null(parm)) {
-        ans <- recursion_lst(private$x, private$f_0, parm)
+        ans <- recursion_lst(private$x__, private$f_0__, parm)
       }
-      idx <- private$idx[private$n:length(self$data)]
+      idx <- private$idx__[private$n__:length(private$data__)]
       ans <- lapply(ans, function(x) {
         y <- zoo::as.zoo(x)
         zoo::index(y) <- idx
         return(y)
       })
-      private$f_t <- ans$f_t[-1]
-      private$score_resid <- ans$s_t[-1]
-      private$stnd_resid <- ans$residuals[-1]
-      private$llik_t <- ans$llik_t[-1]
+      private$f_t__ <- ans$f_t[-1]
+      private$score_resid__ <- ans$s_t[-1]
+      private$stnd_resid__ <- ans$residuals[-1]
+      private$llik_t__ <- ans$llik_t[-1]
       return(ans)
     },
 
     #' @description Returns the log-likelihood of the estimated model.
     logLik = function() {
       ans <- NULL
-      if (!is.null(self$nlopt_res)) ans <- -1 * self$nlopt_res$objective
+      if (!is.null(private$nlopt_res__)) ans <- -1 * private$nlopt_res__$objective
       return(ans)
     },
 
     #' @description Returns a vector of estimated coefficients/parameters.
     coef = function() {
       ans <- NULL
-      if (!is.null(self$nlopt_res)) {
-        ans <- self$nlopt_res$solution
+      if (!is.null(private$nlopt_res__)) {
+        ans <- private$nlopt_res__$solution
         names(ans) <- c("omega", "alpha1", "beta1", "gamma1", "shape")
       }
       return(ans)
@@ -176,36 +178,42 @@ BetaTGARCHfit <- R6::R6Class("BetaTGARCHfit",
     #'  covariances between model parameters.
     vcov = function(...) {
       if (is.null(self$coef())) {
-        msg <- paste("Please estimate the model or filter with or filter with",
-                     "user-supplied model parameters.")
+        msg <- paste(
+          "Please estimate the model or filter with or filter with",
+          "user-supplied model parameters."
+        )
         stop(msg)
       }
       H <- numDeriv::jacobian(
-        function(x) -1*nll(private$x, private$f_0, x)$gradient,
-        self$coef(), ...)
+        function(x) -1 * nll(private$x__, private$f_0__, x)$gradient,
+        self$coef(), ...
+      )
       G <- numDeriv::jacobian(
-        function(x) recursion_lst(private$x, private$f_0, x)$llik_t[-1],
-        self$coef(), ...)
+        function(x) recursion_lst(private$x__, private$f_0__, x)$llik_t[-1],
+        self$coef(), ...
+      )
       rob <- solve(H) %*% t(G) %*% G %*% solve(H)
       rownames(rob) <- names(self$coef())
       colnames(rob) <- names(self$coef())
-      self$se <- sqrt(diag(rob))
+      private$se__ <- sqrt(diag(rob))
       return(rob)
     },
 
     #' @description Returns a vector of standardised residuals from the
     #'  estimated model.
-    residuals = function() private$stnd_resid,
+    residuals = function() private$stnd_resid__,
 
     #' @description Returns a vector of the estimated conditional standard
     #'  deviation.
     sigma = function() {
-      if (is.null(private$f_t)) {
-        msg <- paste("Please estimate the model or filter with or filter with",
-                     "user-supplied model parameters.")
+      if (is.null(private$f_t__)) {
+        msg <- paste(
+          "Please estimate the model or filter with or filter with",
+          "user-supplied model parameters."
+        )
         stop(msg)
       }
-      return(sqrt(private$f_t))
+      return(sqrt(private$f_t__))
     },
 
     #' @description Prints a summary of estimation results to the screen.
@@ -213,44 +221,57 @@ BetaTGARCHfit <- R6::R6Class("BetaTGARCHfit",
       cat("\n############################", sep = "\n")
       cat("# BETA-t-EGARCH(1,1) Model #", sep = "\n")
       cat("############################", sep = "\n")
-      if (private$restrict) {
-        cat(c("\nModel estimated over a restricted parameter",
-              "space that satisfies an empirical version of",
-              "the Lyapunov condition.\n"),
-            sep = "\n")
+      if (private$restrict__) {
+        cat(c(
+          "\nModel estimated over a restricted parameter",
+          "space that satisfies an empirical version of",
+          "the Lyapunov condition.\n"
+        ),
+        sep = "\n"
+        )
       }
-      cat(paste("Converged:", ifelse(self$convergence, "TRUE",
-                                     "FALSE"), "\n"), sep = "\n")
+      cat(paste("Converged:", ifelse(private$convergence__, "TRUE",
+        "FALSE"
+      ), "\n"), sep = "\n")
 
       cat(sprintf("\nLog-Likelihood: %.4f\n", self$logLik()),
-          sep = "\n")
+        sep = "\n"
+      )
 
-      matcoef <- cbind(" Estimate" = self$coef(),
-                       " Std. Error" = sqrt(diag(self$vcov())))
+      matcoef <- cbind(
+        " Estimate" = self$coef(),
+        " Std. Error" = sqrt(diag(self$vcov()))
+      )
       matcoef <- cbind(matcoef, " t value" = matcoef[, 1] / matcoef[, 2])
-      self$matcoef <- cbind(matcoef, "Pr(>|t|)" = pnorm(abs(matcoef[, 3]),
-                                                        lower.tail = FALSE))
-      show(self$matcoef)
+      private$matcoef__ <- cbind(matcoef, "Pr(>|t|)" = pnorm(abs(matcoef[, 3]),
+        lower.tail = FALSE
+      ))
+      show(private$matcoef__)
 
       invisible(self)
-    }),
-
+    }
+  ),
   private = list(
     # Private fields
-    n = NULL,
-    idx = NULL,
-    f_0 = NULL,
-    x = NULL,
-    f_t = NULL,
-    llik_t = NULL,
-    score_resid = NULL,
-    stnd_resid = NULL,
-    restrict = TRUE,
+    n__ = NULL,
+    idx__ = NULL,
+    f_0__ = NULL,
+    x__ = NULL,
+    f_t__ = NULL,
+    llik_t__ = NULL,
+    score_resid__ = NULL,
+    stnd_resid__ = NULL,
+    restrict__ = TRUE,
+    data__ = NULL,
+    matcoef__ = NULL,
+    se__ = NULL,
+    nlopt_res__ = NULL,
+    convergence__ = FALSE,
     # Private methods used by the method `fit`
-    eval_f = function(parm) nll(y = private$x, f_0 = private$f_0, theta = parm),
+    eval_f = function(parm) nll(y = private$x__, f_0 = private$f_0__, theta = parm),
     eval_g = function(parm) {
-      if (private$restrict) {
-        ans <- cnstr(y = private$x, theta = parm)$objective
+      if (private$restrict__) {
+        ans <- cnstr(y = private$x__, theta = parm)$objective
       } else {
         ans <- -1 * (parm[2] + parm[4])
       }
@@ -258,8 +279,8 @@ BetaTGARCHfit <- R6::R6Class("BetaTGARCHfit",
     },
     eval_jac_g = function(parm) {
       ans <- c(0, -1, 0, -1, 0)
-      if (private$restrict) {
-        ans <- cnstr(y = private$x, theta = parm)$jacobian
+      if (private$restrict__) {
+        ans <- cnstr(y = private$x__, theta = parm)$jacobian
       }
       return(ans)
     }
