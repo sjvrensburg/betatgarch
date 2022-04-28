@@ -47,12 +47,27 @@ fit_obj$fit(restrict = FALSE)
 fit_obj$fit(restrict = TRUE)
 ```
 
+Consult the help for `BetaTGARCHfit` for additional information.
+
+### Simulation Example
+
+One can simulate from either an estimated model or by supplying the initial value for the conditional variance and the model coefficients/parameters.
+
+```r
+# Simulate 252 observations using an existing model.
+sim_obj01 <- BetaTGARCHsim$new(model = fit_obj$fit)
+sim_obj01$simulate(252)
+
+# Simulate 252 observations by passing in values for
+# the conditional variance and the model
+# coefficients/parameters.
+sim_obj02 <- BetaTGARCHsim$new(
+  f_0 = fit_obj$f_0(), coef = fit_obj$coef())
+sim_obj02$simulate(252)
+```
+
+You can also simulate values by supplying your own vector of innovations. Consult the help for `BetaTGARCHsim` for additional information.
+
 ## A Note on Estimation
 
 The package estimates parameters by minimising the negative of the log-likelihood. Additionally, it treats the first `n` observations as a pre-sample. By default, `n = 5`. This pre-sample is used to set the initial conditional variance used in the model recursion. Pre-sample observations do not enter the log-likelihood calculation.
-
-
-
-
-
-
