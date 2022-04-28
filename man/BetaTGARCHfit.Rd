@@ -11,32 +11,15 @@ model and access estimates, standard errors, etc.
 \insertRef{Harvey2008}{betatgarch}
 \insertRef{Blasques2018}{betatgarch}
 }
-\section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{data}}{original data passed to BetaTGARCHfit}
-
-\item{\code{matcoef}}{matrix of estimates, robust standard errors, robust t
-statistics and associated p-values}
-
-\item{\code{se}}{estimated standard errors}
-
-\item{\code{nlopt_res}}{the raw results returned by \code{NLOPT}}
-
-\item{\code{boolean}}{that indicates whether estimation was successful}
-}
-\if{html}{\out{</div>}}
-}
-\section{Active bindings}{
-\if{html}{\out{<div class="r6-active-bindings">}}
-\describe{
-\item{\code{boolean}}{that indicates whether estimation was successful}
-}
-\if{html}{\out{</div>}}
-}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
+\item \href{#method-data}{\code{BetaTGARCHfit$data()}}
+\item \href{#method-f_0}{\code{BetaTGARCHfit$f_0()}}
+\item \href{#method-matcoef}{\code{BetaTGARCHfit$matcoef()}}
+\item \href{#method-se}{\code{BetaTGARCHfit$se()}}
+\item \href{#method-nlopt_res}{\code{BetaTGARCHfit$nlopt_res()}}
+\item \href{#method-convergence}{\code{BetaTGARCHfit$convergence()}}
 \item \href{#method-new}{\code{BetaTGARCHfit$new()}}
 \item \href{#method-nobs}{\code{BetaTGARCHfit$nobs()}}
 \item \href{#method-fit}{\code{BetaTGARCHfit$fit()}}
@@ -47,9 +30,69 @@ statistics and associated p-values}
 \item \href{#method-residuals}{\code{BetaTGARCHfit$residuals()}}
 \item \href{#method-sigma}{\code{BetaTGARCHfit$sigma()}}
 \item \href{#method-show}{\code{BetaTGARCHfit$show()}}
-\item \href{#method-summary}{\code{BetaTGARCHfit$summary()}}
 \item \href{#method-clone}{\code{BetaTGARCHfit$clone()}}
 }
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-data"></a>}}
+\if{latex}{\out{\hypertarget{method-data}{}}}
+\subsection{Method \code{data()}}{
+Original data passed to BetaTGARCHfit
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BetaTGARCHfit$data()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-f_0"></a>}}
+\if{latex}{\out{\hypertarget{method-f_0}{}}}
+\subsection{Method \code{f_0()}}{
+Initial value of the conditional variance.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BetaTGARCHfit$f_0()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-matcoef"></a>}}
+\if{latex}{\out{\hypertarget{method-matcoef}{}}}
+\subsection{Method \code{matcoef()}}{
+Matrix of estimates, robust standard errors, robust t
+  statistics and associated p-values
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BetaTGARCHfit$matcoef()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-se"></a>}}
+\if{latex}{\out{\hypertarget{method-se}{}}}
+\subsection{Method \code{se()}}{
+Estimated standard errors
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BetaTGARCHfit$se()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-nlopt_res"></a>}}
+\if{latex}{\out{\hypertarget{method-nlopt_res}{}}}
+\subsection{Method \code{nlopt_res()}}{
+The raw results returned by \code{NLOPT}
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BetaTGARCHfit$nlopt_res()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-convergence"></a>}}
+\if{latex}{\out{\hypertarget{method-convergence}{}}}
+\subsection{Method \code{convergence()}}{
+Boolean that indicates whether estimation was successful
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BetaTGARCHfit$convergence()}\if{html}{\out{</div>}}
+}
+
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-new"></a>}}
@@ -171,6 +214,7 @@ estimated values. Supplying a parameter vector is not recommended since
 \if{html}{\out{<a id="method-logLik"></a>}}
 \if{latex}{\out{\hypertarget{method-logLik}{}}}
 \subsection{Method \code{logLik()}}{
+Returns the log-likelihood of the estimated model.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BetaTGARCHfit$logLik()}\if{html}{\out{</div>}}
 }
@@ -191,12 +235,19 @@ Returns a vector of estimated coefficients/parameters.
 \if{latex}{\out{\hypertarget{method-vcov}{}}}
 \subsection{Method \code{vcov()}}{
 Calculates the robust variance-covariance matrix of a fitted
- Beta-t-GARCH(1,1) model. This method returns matrix of estimated
- covariances between model parameters.
+Beta-t-GARCH(1,1) model. This method returns a matrix of estimated
+covariances between model parameters.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BetaTGARCHfit$vcov(...)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{...}}{additional arguments passed to \code{numDeriv::jacobian}}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-residuals"></a>}}
@@ -213,6 +264,8 @@ Returns a vector of standardised residuals from the
 \if{html}{\out{<a id="method-sigma"></a>}}
 \if{latex}{\out{\hypertarget{method-sigma}{}}}
 \subsection{Method \code{sigma()}}{
+Returns a vector of the estimated conditional standard
+ deviation.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BetaTGARCHfit$sigma()}\if{html}{\out{</div>}}
 }
@@ -222,18 +275,9 @@ Returns a vector of standardised residuals from the
 \if{html}{\out{<a id="method-show"></a>}}
 \if{latex}{\out{\hypertarget{method-show}{}}}
 \subsection{Method \code{show()}}{
+Prints a summary of estimation results to the screen.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BetaTGARCHfit$show()}\if{html}{\out{</div>}}
-}
-
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-summary"></a>}}
-\if{latex}{\out{\hypertarget{method-summary}{}}}
-\subsection{Method \code{summary()}}{
-Summary of Estimation Results
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BetaTGARCHfit$summary()}\if{html}{\out{</div>}}
 }
 
 }
