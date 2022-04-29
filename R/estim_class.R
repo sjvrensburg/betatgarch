@@ -12,6 +12,10 @@ BetaTGARCHfit <- R6::R6Class("BetaTGARCHfit",
 
     #' @description Matrix of estimates, robust standard errors, robust t
     #'   statistics and associated p-values
+    #' @details
+    #' Note that the p-values are expressed \eqn{P(Z \ge |t|)}. Therefore, a
+    #' parameter is significantly different from nought if the p-value is less
+    #' than \eqn{\alpha.}
     matcoef = function() private$matcoef__,
 
     #' @description Estimated standard errors

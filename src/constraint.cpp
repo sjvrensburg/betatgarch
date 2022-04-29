@@ -51,7 +51,7 @@ constraint(const Eigen::VectorXd& y, const Eigen::Matrix<
   }
 
   // Main condition
-  cond_2 /= y.size();
+  cond_2 /= (y.size() - 1.0);
   cond_2 += delta;
 
   // Result
