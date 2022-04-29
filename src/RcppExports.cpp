@@ -11,6 +11,18 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
+// elc
+Eigen::VectorXd elc(const Eigen::VectorXd& y, const Eigen::VectorXd theta);
+RcppExport SEXP _betatgarch_elc(SEXP ySEXP, SEXP thetaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Eigen::VectorXd& >::type y(ySEXP);
+    Rcpp::traits::input_parameter< const Eigen::VectorXd >::type theta(thetaSEXP);
+    rcpp_result_gen = Rcpp::wrap(elc(y, theta));
+    return rcpp_result_gen;
+END_RCPP
+}
 // cnstr
 List cnstr(const Eigen::VectorXd y, const Eigen::VectorXd theta);
 RcppExport SEXP _betatgarch_cnstr(SEXP ySEXP, SEXP thetaSEXP) {
@@ -64,6 +76,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_betatgarch_elc", (DL_FUNC) &_betatgarch_elc, 2},
     {"_betatgarch_cnstr", (DL_FUNC) &_betatgarch_cnstr, 2},
     {"_betatgarch_recursion_lst", (DL_FUNC) &_betatgarch_recursion_lst, 3},
     {"_betatgarch_nll", (DL_FUNC) &_betatgarch_nll, 3},
