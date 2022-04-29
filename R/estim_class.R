@@ -160,6 +160,17 @@ BetaTGARCHfit <- R6::R6Class("BetaTGARCHfit",
       return(ans)
     },
 
+    #' @description
+    #' Test whether the point estimate is in a boundary point of the "true"
+    #' invertibility region.
+    boundary_test = function() {
+      ans <- NULL
+      if (!is.null(self$coef())) {
+        ans <- boundary_test(private$x__, self$coef())
+      }
+      return(ans)
+    },
+
     #' @description Returns the log-likelihood of the estimated model.
     logLik = function() {
       ans <- NULL
