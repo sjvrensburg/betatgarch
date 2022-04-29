@@ -14,15 +14,15 @@
 #include <unordered_map>
 
 using namespace Rcpp;
-using stan::math::abs;
 using stan::math::pow;
 using stan::math::sqrt;
 using stan::math::log;
+using stan::math::mean;
 using boost::math::tools::promote_args;
 
 template <typename T>
 Eigen::Matrix<typename promote_args<T, double>::type, Eigen::Dynamic, 1>
-constraint(const Eigen::VectorXd& y, const Eigen::Matrix<
+log_lambda(const Eigen::VectorXd& y, const Eigen::Matrix<
   T, Eigen::Dynamic, 1> theta) {
 
   // Extract the parameters.
@@ -33,12 +33,9 @@ constraint(const Eigen::VectorXd& y, const Eigen::Matrix<
   const T n = theta(4);
   const T wbar = w / (1.0 - b);
 
-  const double delta = pow(10, std::numeric_limits<double>::min_exponent10);
   typedef typename promote_args<T, double>::type TYPE;
-  TYPE cond_1 = -1.0 * (a + g);
-  TYPE cond_2 = 0.0;
+  Eigen::Matrix<TYPE, Eigen::Dynamic, 1> llambda(y.size() - 1);
   TYPE dphi = 0.0;
-
   double d = 0.0;
 
   for (auto t = 1; t < y.size(); t++) {
@@ -47,11 +44,41 @@ constraint(const Eigen::VectorXd& y, const Eigen::Matrix<
     dphi = (a + g*d) * (n + 1) * pow(y(t), 4);
     dphi /= pow((n - 2) * wbar + y(t)*y(t), 2);
     dphi += b;
-    cond_2 += log(abs(dphi));
+    llambda(t-1) = log(stan::math::abs(dphi));
   }
 
-  // Main condition
-  cond_2 /= (y.size() - 1.0);
+  return llambda;
+}
+
+//' Contributions to The Empirical Lyapunov Condition
+//'
+//' @details Calculates \eqn{\log{\Lambda_t(\theta)}} for \eqn{t=1,2,\ldots}
+//'
+//' @param y numeric vector of observations \eqn{y_0, y_1, ...}
+//' @param theta numeric vector of parameter values
+//'
+//' @returns Returns a vector with the values \eqn{\log{\Lambda_t(\theta)}} for
+//'   \eqn{t=1,2,\ldots}
+//'
+// [[Rcpp::export]]
+Eigen::VectorXd elc(const Eigen::VectorXd& y, const Eigen::VectorXd theta) {
+  return log_lambda(y, theta);
+}
+
+template <typename T>
+Eigen::Matrix<typename promote_args<T, double>::type, Eigen::Dynamic, 1>
+constraint(const Eigen::VectorXd& y, const Eigen::Matrix<
+  T, Eigen::Dynamic, 1> theta) {
+
+  // Extract the parameters.
+  const T a = theta(1);
+  const T g = theta(3);
+
+  // Constraints
+  typedef typename promote_args<T, double>::type TYPE;
+  const double delta = pow(10, std::numeric_limits<double>::min_exponent10);
+  TYPE cond_1 = -1.0 * (a + g);
+  TYPE cond_2 = mean(log_lambda(y, theta));
   cond_2 += delta;
 
   // Result
