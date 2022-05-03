@@ -27,3 +27,4 @@ LinkingTo: BH, Rcpp, RcppEigen, RcppParallel, rstan, StanHeaders
 SystemRequirements: GNU make
 RoxygenNote: 7.1.2
 Encoding: UTF-8
+LazyData: true
