@@ -19,28 +19,14 @@ At this time, the package contains functions to estimate and simulate from the B
 
 ### Estimation Example
 
-Download the file `HangSeng.csv` from [https://www.econ.cam.ac.uk/DCS/data.html](https://www.econ.cam.ac.uk/DCS/data.html) and import it into R:
-
-```r
-# Using the library readr
-hang_seng <- readr::read_csv(
-  "HangSeng.csv", col_types = cols(
-    ...1 = col_skip(),
-    date = col_date(format = "%d/%m/%Y")))
-hang_seng <- zoo::zoo(hang_seng$returns, order.by = hang_seng$date)
-```
+The package includes a dataset `nasdaq` that contains monthly returns on the NASDAQ composite index.
 
 Import the library, create a `BetaTGARCHfit` object and use the `fit` method to estimate the model.
 
 ```r
 library(betatgarch)
 
-fit_obj <- BetaTGARCHfit$new(hang_seng, n = 5)
-
-# Estimate the model without restricting the parameter space
-# to a region that satisfies an empirical version of the 
-# Lyapunov condition.
-fit_obj$fit(restrict = FALSE)
+fit_obj <- BetaTGARCHfit$new(nasdaq, n = 12)
 
 # Estimate the model over a restricted parameter space that
 # satisfies an empirical version of the Lyapunov condition.
@@ -54,17 +40,19 @@ Consult the help for `BetaTGARCHfit` for additional information.
 One can simulate from either an estimated model or by supplying the initial value for the conditional variance and the model coefficients/parameters.
 
 ```r
-# Simulate 252 observations using an existing model.
+# Simulate 120 observations using an existing model.
 sim_obj01 <- BetaTGARCHsim$new(model = fit_obj$fit)
-sim_obj01$simulate(252)
+sim_obj01$simulate(120)
 
-# Simulate 252 observations by passing in values for
+# Simulate 120 observations by passing in values for
 # the conditional variance and the model
 # coefficients/parameters.
 sim_obj02 <- BetaTGARCHsim$new(
   f_0 = fit_obj$f_0(), coef = fit_obj$coef())
-sim_obj02$simulate(252)
+sim_obj02$simulate(120)
 ```
+
+Note that, occasionally, `simulate` may produce series with `NaN`s.
 
 You can also simulate values by supplying your own vector of innovations. Consult the help for `BetaTGARCHsim` for additional information.
 
