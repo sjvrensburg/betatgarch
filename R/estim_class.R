@@ -1,6 +1,7 @@
 #' @title BetaTGARCHfit: Estimation And Related Methods
 #' @description  The class provides a method to estimate the Beta-t-GARCH(1,1)
-#' model and access estimates, standard errors, etc.
+#' model and access estimates, standard errors, etc. The most important methods
+#' being \code{new()} and \code{fit()}.
 BetaTGARCHfit <- R6::R6Class("BetaTGARCHfit",
   lock_objects = FALSE,
   public = list(
