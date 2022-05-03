@@ -5,7 +5,8 @@
 \title{BetaTGARCHfit: Estimation And Related Methods}
 \description{
 The class provides a method to estimate the Beta-t-GARCH(1,1)
-model and access estimates, standard errors, etc.
+model and access estimates, standard errors, etc. The most important methods
+being \code{new()} and \code{fit()}.
 }
 \references{
 \insertRef{Harvey2008}{betatgarch}
@@ -24,6 +25,7 @@ model and access estimates, standard errors, etc.
 \item \href{#method-nobs}{\code{BetaTGARCHfit$nobs()}}
 \item \href{#method-fit}{\code{BetaTGARCHfit$fit()}}
 \item \href{#method-filter}{\code{BetaTGARCHfit$filter()}}
+\item \href{#method-boundary_test}{\code{BetaTGARCHfit$boundary_test()}}
 \item \href{#method-logLik}{\code{BetaTGARCHfit$logLik()}}
 \item \href{#method-coef}{\code{BetaTGARCHfit$coef()}}
 \item \href{#method-vcov}{\code{BetaTGARCHfit$vcov()}}
@@ -61,6 +63,12 @@ Matrix of estimates, robust standard errors, robust t
   statistics and associated p-values
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BetaTGARCHfit$matcoef()}\if{html}{\out{</div>}}
+}
+
+\subsection{Details}{
+Note that the p-values are expressed \eqn{P(Z \ge |t|)}. Therefore, a
+parameter is significantly different from nought if the p-value is less
+than \eqn{\alpha.}
 }
 
 }
@@ -209,6 +217,17 @@ estimated values. Supplying a parameter vector is not recommended since
 }
 \if{html}{\out{</div>}}
 }
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-boundary_test"></a>}}
+\if{latex}{\out{\hypertarget{method-boundary_test}{}}}
+\subsection{Method \code{boundary_test()}}{
+Test whether the point estimate is in a boundary point of the "true"
+invertibility region.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BetaTGARCHfit$boundary_test()}\if{html}{\out{</div>}}
+}
+
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-logLik"></a>}}

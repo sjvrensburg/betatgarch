@@ -10,7 +10,9 @@ License: GPL (>= 3)
 Depends:
   R (>= 4.1.1),
   nloptr (>= 2.0.0),
-  rugarch (>= 1.4-7)
+  rugarch (>= 1.4-7),
+  lmtest (>= 0.9-40),
+  sandwich (>= 3.0-1)
 Imports:
   Rdpack,
   methods,
@@ -25,3 +27,4 @@ LinkingTo: BH, Rcpp, RcppEigen, RcppParallel, rstan, StanHeaders
 SystemRequirements: GNU make
 RoxygenNote: 7.1.2
 Encoding: UTF-8
+LazyData: true

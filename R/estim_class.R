@@ -1,6 +1,7 @@
 #' @title BetaTGARCHfit: Estimation And Related Methods
 #' @description  The class provides a method to estimate the Beta-t-GARCH(1,1)
-#' model and access estimates, standard errors, etc.
+#' model and access estimates, standard errors, etc. The most important methods
+#' being \code{new()} and \code{fit()}.
 BetaTGARCHfit <- R6::R6Class("BetaTGARCHfit",
   lock_objects = FALSE,
   public = list(
@@ -12,6 +13,10 @@ BetaTGARCHfit <- R6::R6Class("BetaTGARCHfit",
 
     #' @description Matrix of estimates, robust standard errors, robust t
     #'   statistics and associated p-values
+    #' @details
+    #' Note that the p-values are expressed \eqn{P(Z \ge |t|)}. Therefore, a
+    #' parameter is significantly different from nought if the p-value is less
+    #' than \eqn{\alpha.}
     matcoef = function() private$matcoef__,
 
     #' @description Estimated standard errors
@@ -153,6 +158,17 @@ BetaTGARCHfit <- R6::R6Class("BetaTGARCHfit",
       private$score_resid__ <- ans$s_t[-1]
       private$stnd_resid__ <- ans$residuals[-1]
       private$llik_t__ <- ans$llik_t[-1]
+      return(ans)
+    },
+
+    #' @description
+    #' Test whether the point estimate is in a boundary point of the "true"
+    #' invertibility region.
+    boundary_test = function() {
+      ans <- NULL
+      if (!is.null(self$coef())) {
+        ans <- boundary_test(private$x__, self$coef())
+      }
       return(ans)
     },
 
