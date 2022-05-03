@@ -33,7 +33,7 @@ BetaTGARCHsim <- R6::R6Class("BetaTGARCHsim",
     #' and \code{coef}. Moreover, it is assumed that a supplied model was
     #' estimated.
     initialize = function(model = NULL, f_0 = NULL, coef = NULL) {
-      if ("BetaTGARCHfit" %in% class(obj)) {
+      if ("BetaTGARCHfit" %in% class(model)) {
         private$f_0__ <- model$f_0()
         private$coef__ <- model$coef()
       } else {
