@@ -120,7 +120,8 @@ BetaTGARCHfit <- R6::R6Class("BetaTGARCHfit",
       }
       self$coef()
       self$vcov()
-      self$show()
+      # Only display if not quiet.
+      if (!quiet) self$show()
       self$filter()
       invisible(self)
     },
