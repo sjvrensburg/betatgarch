@@ -72,6 +72,7 @@ BetaTGARCHfit <- R6::R6Class("BetaTGARCHfit",
     #' @param lb,ub vectors that specify the upper and lower bounds for model
     #'   parameters
     #' @param opts a list that specifies the algorithm and other options used by
+    #' @param quiet if TRUE then suppresses output
     #' @param ... additional arguments passed to \code{nloptr}.
     #'   \code{nloptr} to minimise the negative log-likelihood.
     #' @details
@@ -97,8 +98,7 @@ BetaTGARCHfit <- R6::R6Class("BetaTGARCHfit",
                      local_opts = list(
                        algorithm = "NLOPT_LD_LBFGS",
                        xtol_rel = 1.0e-10, maxeval = 500
-                     )
-                   ), ...) {
+                     )), quiet = FALSE, ...) {
       private$restrict__ <- restrict
       # Define the objective, gradient and constraints.
       eval_f <- function(x) private$eval_f(x)
