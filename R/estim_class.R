@@ -72,15 +72,21 @@ BetaTGARCHfit <- R6::R6Class("BetaTGARCHfit",
     #' @param lb,ub vectors that specify the upper and lower bounds for model
     #'   parameters
     #' @param opts a list that specifies the algorithm and other options used by
-    #' @param quiet if TRUE then suppresses output
-    #' @param ... additional arguments passed to \code{nloptr}.
     #'   \code{nloptr} to minimise the negative log-likelihood.
+    #' @param quiet if TRUE then suppresses output
+    #' @param tiktak a list with options for the TikTak multistart algorithm.
+    #'   Only required if you want to use the tiktak method.
+    #' @param ... additional arguments passed to \code{nloptr}.
     #' @details
     #'   This function estimates the Beta-t-GARCH(1,1) model with leverage of
     #'   \insertCite{Harvey2008;textual}{betatgarch}. It can, optionally, maximise
     #'   the log-likelihood over a restricted parameter space that satisfies an
     #'   empirical version of the Lyapunov condition as in
     #'   \insertCite{Blasques2018;textual}{betatgarch}.
+    #'
+    #'   In case you have the TikTakR package installed then you can use it to
+    #'   estimate the model. You will need to supply a list with values for n
+    #'   and N, e.g., \code{tiktak = list(n = 10, N = 1000)}
     #'
     #'   NOTE: If you receive the error
     #'   "\code{student_t_lpdf: Scale parameter is 0, but must be > 0!}"
@@ -98,21 +104,44 @@ BetaTGARCHfit <- R6::R6Class("BetaTGARCHfit",
                      local_opts = list(
                        algorithm = "NLOPT_LD_LBFGS",
                        xtol_rel = 1.0e-10, maxeval = 500
-                     )), quiet = FALSE, ...) {
+                     )), quiet = FALSE, tiktak = NULL, ...) {
       private$restrict__ <- restrict
       # Define the objective, gradient and constraints.
       eval_f <- function(x) private$eval_f(x)
       eval_g <- function(x) private$eval_g(x)
       eval_jac_g <- function(x) private$eval_jac_g(x)
       # Initial values...
-      if (is.null(x0)) {
+      if (!is.null(tiktak)) {
+        # Is the TikTakR package available?
+        installed <- tryCatch({find.package("TikTakR"); TRUE},
+                              error = function(e) FALSE)
+        if (!installed) {
+          msg <- "Cannot use tiktak since TikTakR is not installed."
+          msg <- paste(msg, "Please install from:",
+                       "https://github.com/sjvrensburg/TikTakR")
+          stop(msg)
+        }
+        n <- tiktak$n
+        N <- 100 * n
+        if (!is.null(tiktak$N)) N <- tiktak$N
+        # Generate candidate starting values.
+        # Manipulate ub and opt...
+        ub_ <- c(var(private$x__), 1, 1, 1, 10)
+        ub_ <- sapply(1:length(ub), function(i) pmin(ub_[i], ub[i]))
+        opts_ <- opts
+        opts_$xtol_rel <- 1e-6
+        if (!is.null(opts_$local_opts)) opts_$local_opts$xtol_rel <- 1e-6
+        private$nlopt_res__ <- TikTakR::tiktak(
+          eval_f = eval_f, n, lb = lb, ub = ub_, N = N, eval_g_ineq = eval_g,
+          eval_jac_g_ineq = eval_jac_g, opts = opts_, ...)
+        x0 <- private$nlopt_res__$solution
+      } else if (is.null(x0)) {
         x0 <- c(w = private$f_0__ * 0.1, a = 0.05, b = 0.9, g = 0, n = 4)
       }
       # Perform the optimisation
       private$nlopt_res__ <- nloptr::nloptr(
         x0 = x0, eval_f = eval_f, lb = lb, ub = ub, eval_g_ineq = eval_g,
-        eval_jac_g_ineq = eval_jac_g, opts = opts, ...
-      )
+        eval_jac_g_ineq = eval_jac_g, opts = opts, ...)
       private$convergence__ <- TRUE
       if (private$nlopt_res__$status < 0 | private$nlopt_res__$status == 5) {
         warning(private$nlopt_res__$message)
