@@ -155,6 +155,8 @@ Maximum Likelihood Estimation of The Beta-t-GARCH(1,1) Model
   ub = c(Inf, 1, 1, 1, Inf),
   opts = list(algorithm = "NLOPT_LD_AUGLAG", xtol_rel = 1e-12, maxeval = 1000,
     local_opts = list(algorithm = "NLOPT_LD_LBFGS", xtol_rel = 1e-10, maxeval = 500)),
+  quiet = FALSE,
+  tiktak = NULL,
   ...
 )}\if{html}{\out{</div>}}
 }
@@ -171,10 +173,15 @@ Lyapunov condition.}
 \item{\code{lb, ub}}{vectors that specify the upper and lower bounds for model
 parameters}
 
-\item{\code{opts}}{a list that specifies the algorithm and other options used by}
-
-\item{\code{...}}{additional arguments passed to \code{nloptr}.
+\item{\code{opts}}{a list that specifies the algorithm and other options used by
 \code{nloptr} to minimise the negative log-likelihood.}
+
+\item{\code{quiet}}{if TRUE then suppresses output}
+
+\item{\code{tiktak}}{a list with options for the TikTak multistart algorithm.
+Only required if you want to use the tiktak method.}
+
+\item{\code{...}}{additional arguments passed to \code{nloptr}.}
 }
 \if{html}{\out{</div>}}
 }
@@ -184,6 +191,13 @@ This function estimates the Beta-t-GARCH(1,1) model with leverage of
   the log-likelihood over a restricted parameter space that satisfies an
   empirical version of the Lyapunov condition as in
   \insertCite{Blasques2018;textual}{betatgarch}.
+
+  In case you have the TikTakR package installed then you can use it to
+  estimate the model. You will need to supply a list with values for n
+  and N, e.g., \code{tiktak = list(n = 10, N = 1000)} This list can also
+  include a list, \code{opts}, with options for the local search used by
+  by the TikTak algorithm. However, the default is to use the list given
+  in the arguments \code{opts} and set \code{xtol_rel = 1e-6.}
 
   NOTE: If you receive the error
   "\code{student_t_lpdf: Scale parameter is 0, but must be > 0!}"

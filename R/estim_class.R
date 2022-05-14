@@ -86,7 +86,10 @@ BetaTGARCHfit <- R6::R6Class("BetaTGARCHfit",
     #'
     #'   In case you have the TikTakR package installed then you can use it to
     #'   estimate the model. You will need to supply a list with values for n
-    #'   and N, e.g., \code{tiktak = list(n = 10, N = 1000)}
+    #'   and N, e.g., \code{tiktak = list(n = 10, N = 1000)} This list can also
+    #'   include a list, \code{opts}, with options for the local search used by
+    #'   by the TikTak algorithm. However, the default is to use the list given
+    #'   in the arguments \code{opts} and set \code{xtol_rel = 1e-6.}
     #'
     #'   NOTE: If you receive the error
     #'   "\code{student_t_lpdf: Scale parameter is 0, but must be > 0!}"
@@ -124,17 +127,40 @@ BetaTGARCHfit <- R6::R6Class("BetaTGARCHfit",
         n <- tiktak$n
         N <- 100 * n
         if (!is.null(tiktak$N)) N <- tiktak$N
+        if (is.null(tiktak$opts)) {
+          opts_ <- opts
+          opts_$xtol_rel <- 1e-6
+          if (!is.null(opts_$local_opts)) opts_$local_opts$xtol_rel <- 1e-6
+        } else {
+          opts_ <- tiktak$opts
+        }
         # Generate candidate starting values.
         # Manipulate ub and opt...
+        lb_ <- c(.Machine$double.eps, 0, 0, -1, 4)
+        lb_ <- sapply(1:length(lb), function(i) pmax(lb_[i], lb[i]))
         ub_ <- c(var(private$x__), 1, 1, 1, 10)
         ub_ <- sapply(1:length(ub), function(i) pmin(ub_[i], ub[i]))
-        opts_ <- opts
-        opts_$xtol_rel <- 1e-6
-        if (!is.null(opts_$local_opts)) opts_$local_opts$xtol_rel <- 1e-6
-        private$nlopt_res__ <- TikTakR::tiktak(
+        # TikTak
+        tiktak_res <- TikTakR::tiktak(
           eval_f = eval_f, n, lb = lb, ub = ub_, N = N, eval_g_ineq = eval_g,
           eval_jac_g_ineq = eval_jac_g, opts = opts_, ...)
-        x0 <- private$nlopt_res__$solution
+        # If the TikTak value is good then use it as our start value
+        tiktak_good <- rlang::has_name(tiktak_res, "status")
+        tiktak_good <- tiktak_good & tiktak_res$status >= 0
+        tiktak_good <- tiktak_good & all(is.finite(tiktak_res$solution))
+        if (tiktak_good) {
+          # Sometimes, supplying the optimal solution as the starting
+          # value can cause issues... not sure why.
+          x0 <- round(tiktak_res$solution, 3)
+          # Make sure that all values are inside the bounds...
+          x0 <- sapply(1:length(x0), function(i) {
+            clamp(x0[i], lb_[i], ub_[i])
+          })
+        } else {
+          msg <- "TikTak did not result in a viable solution."
+          msg <- paste(msg, "Reverting to default method.")
+          warning(msg)
+        }
       } else if (is.null(x0)) {
         x0 <- c(w = private$f_0__ * 0.1, a = 0.05, b = 0.9, g = 0, n = 4)
       }

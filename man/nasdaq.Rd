@@ -8,7 +8,7 @@
 A zoo object with 375 observations.
 }
 \source{
-
+\url{https://finance.yahoo.com/}
 }
 \usage{
 nasdaq
