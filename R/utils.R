@@ -4,3 +4,8 @@ prep_data <- function(x, n = 5) {
   y <- x[n:length(x)]
   list(f_0 = f_0, y = y)
 }
+
+clamp <- function(x, e1, e2 = -e1) {
+  e1 <- sort(c(e1, e2))
+  pmin(pmax(x, e1[1]), e1[2])
+}
