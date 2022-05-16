@@ -11,6 +11,7 @@
 #include <cmath>
 #include <string>
 #include <unordered_map>
+#include <limits>
 
 using namespace Rcpp;
 using stan::math::multiply;
@@ -31,6 +32,13 @@ typename promote_args<T1, T2>::type log_pdf(const T1 x, const T2 f,
   const TYPE phi = sqrt(divide(nu - 2.0, nu));
   const TYPE sigma = multiply(sqrt(f), phi);
   // Calculate the log-density of Y~T with df = nu and V[Y] = f.
+  TYPE ans = 0;
+  try {
+    ans = student_t_lpdf(x, nu, 0.0, sigma);
+  } catch(std::domain_error &e) {
+    ans = std::numeric_limits<double>::quiet_NaN();
+    Rcpp::warning("student_t_lpdf: Scale parameter is 0, but must be > 0!");
+  }
   return student_t_lpdf(x, nu, 0.0, sigma);
 }
 
