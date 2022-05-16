@@ -126,7 +126,9 @@ BetaTGARCHfit <- R6::R6Class("BetaTGARCHfit",
         }
         n <- tiktak$n
         N <- 100 * n
+        num_cores <- NULL
         if (!is.null(tiktak$N)) N <- tiktak$N
+        if (!is.null(tiktak$num_cores)) num_cores <- tiktak$num_cores
         if (is.null(tiktak$opts)) {
           opts_ <- opts
           opts_$xtol_rel <- 1e-6
@@ -143,7 +145,8 @@ BetaTGARCHfit <- R6::R6Class("BetaTGARCHfit",
         # TikTak
         tiktak_res <- TikTakR::tiktak(
           eval_f = eval_f, n, lb = lb, ub = ub_, N = N, eval_g_ineq = eval_g,
-          eval_jac_g_ineq = eval_jac_g, opts = opts_, ...)
+          eval_jac_g_ineq = eval_jac_g, opts = opts_, num_cores = num_cores,
+          ...)
         # If the TikTak value is good then use it as our start value
         tiktak_good <- rlang::has_name(tiktak_res, "status")
         tiktak_good <- tiktak_good & tiktak_res$status >= 0
@@ -343,7 +346,24 @@ BetaTGARCHfit <- R6::R6Class("BetaTGARCHfit",
     nlopt_res__ = NULL,
     convergence__ = FALSE,
     # Private methods used by the method `fit`
-    eval_f = function(parm) nll(y = private$x__, f_0 = private$f_0__, theta = parm),
+    eval_f = function(parm) {
+      tryCatch(expr = nll(y = private$x__, f_0 = private$f_0__, theta = parm),
+               warning = function(w) {
+                 rnd_dir <- sample(x = c(-1, 1), size = length(parm),
+                                   replace = TRUE)
+                 ans <- list(objective = .Machine$double.xmax,
+                             gradient = .Machine$double.xmax * rnd_dir)
+                 return(ans)
+               },
+               error = function(e) {
+                 warning(e)
+                 rnd_dir <- sample(x = c(-1, 1), size = length(parm),
+                                   replace = TRUE)
+                 ans <- list(objective = .Machine$double.xmax,
+                             gradient = .Machine$double.xmax * rnd_dir)
+                 return(ans)
+               })
+    },
     eval_g = function(parm) {
       if (private$restrict__) {
         ans <- cnstr(y = private$x__, theta = parm)$objective
