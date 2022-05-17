@@ -126,9 +126,9 @@ BetaTGARCHfit <- R6::R6Class("BetaTGARCHfit",
         }
         n <- tiktak$n
         N <- 100 * n
-        num_cores <- NULL
+        num.cores <- NULL
         if (!is.null(tiktak$N)) N <- tiktak$N
-        if (!is.null(tiktak$num_cores)) num_cores <- tiktak$num_cores
+        if (!is.null(tiktak$num.cores)) num.cores <- tiktak$num.cores
         if (is.null(tiktak$opts)) {
           opts_ <- opts
           opts_$xtol_rel <- 1e-6
@@ -145,7 +145,7 @@ BetaTGARCHfit <- R6::R6Class("BetaTGARCHfit",
         # TikTak
         tiktak_res <- TikTakR::tiktak(
           eval_f = eval_f, n, lb = lb, ub = ub_, N = N, eval_g_ineq = eval_g,
-          eval_jac_g_ineq = eval_jac_g, opts = opts_, num_cores = num_cores,
+          eval_jac_g_ineq = eval_jac_g, opts = opts_, num.cores = num.cores,
           ...)
         # If the TikTak value is good then use it as our start value
         tiktak_good <- rlang::has_name(tiktak_res, "status")
